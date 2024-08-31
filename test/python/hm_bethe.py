@@ -1,7 +1,6 @@
 import numpy as np
 import scipy as sp
-from edipy import *
-import edipy as ed
+from edipy import global_env as ed
 import mpi4py
 from mpi4py import MPI
 import os,sys
@@ -20,10 +19,10 @@ def dens_bethe(x,d):
 
 #READ ED INPUT:
 ed.read_input("inputED.conf")
-if(ed.vars.Nspin!=1 or ed.vars.Norb!=1):
+if(ed.Nspin!=1 or ed.Norb!=1):
     print("This test code is for Nspin=1 + Norb=1.")
-    ed.vars.Nspin=1
-    ed.vars.Norb=1
+    ed.Nspin=1
+    ed.Norb=1
 Le      = 1000
 wmixing = 0.3
 wband   = 1.0
@@ -33,18 +32,18 @@ Eband,de = np.linspace(-wband,wband,Le,retstep=True)
 Dband = dens_bethe(Eband,wband)
 
 #BUILD frequency array:
-wm = np.pi/ed.vars.beta*(2*np.arange(ed.vars.Lmats)+1)
-wr = np.linspace(ed.vars.wini,ed.vars.wfin,ed.vars.Lreal)
+wm = np.pi/ed.beta*(2*np.arange(ed.Lmats)+1)
+wr = np.linspace(ed.wini,ed.wfin,ed.Lreal)
 
 
 #Allocate minimal required arrays:
 #ALL functions must have shape [Nspin,Nspin,Norb,Norb(,L)]:
-Smats=np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb,ed.vars.Lmats),dtype='complex',order='F')
-Gmats=np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb,ed.vars.Lmats),dtype='complex',order='F')
-Sreal=np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb,ed.vars.Lreal),dtype='complex',order='F')
-Greal=np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb,ed.vars.Lreal),dtype='complex',order='F')
-Delta=np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb,ed.vars.Lmats),dtype='complex',order='F')
-Hloc =np.zeros((ed.vars.Nspin,ed.vars.Nspin,ed.vars.Norb,ed.vars.Norb),dtype='float',order='F')
+Smats=np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb,ed.Lmats),dtype='complex',order='F')
+Gmats=np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb,ed.Lmats),dtype='complex',order='F')
+Sreal=np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb,ed.Lreal),dtype='complex',order='F')
+Greal=np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb,ed.Lreal),dtype='complex',order='F')
+Delta=np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb,ed.Lmats),dtype='complex',order='F')
+Hloc =np.zeros((ed.Nspin,ed.Nspin,ed.Norb,ed.Norb),dtype='float',order='F')
 
 
 
@@ -56,9 +55,9 @@ bath_prev = np.copy(bath)
 
 #DMFT CYCLE
 converged=False;iloop=0
-while (not converged and iloop<ed.vars.Nloop ):
+while (not converged and iloop<ed.Nloop ):
     iloop=iloop+1
-    print("DMFT-loop:",iloop,"/",ed.vars.Nloop)
+    print("DMFT-loop:",iloop,"/",ed.Nloop)
 
     #Solve the EFFECTIVE IMPURITY PROBLEM (first w/ a guess for the bath)
     ed.solve(bath,Hloc)
@@ -71,12 +70,12 @@ while (not converged and iloop<ed.vars.Nloop ):
 
 
     #Compute the local gf:
-    for i in range(ed.vars.Lmats):
+    for i in range(ed.Lmats):
         zeta             = wm[i]*1j - Smats[0,0,0,0,i]
         Gmats[0,0,0,0,i] = sum(Dband/(zeta - Eband))*de
 
-    for i in range(ed.vars.Lreal):
-        zeta             = wr[i]+ed.vars.eps*1j - Sreal[0,0,0,0,i]
+    for i in range(ed.Lreal):
+        zeta             = wr[i]+ed.eps*1j - Sreal[0,0,0,0,i]
         Greal[0,0,0,0,i] = sum(Dband/(zeta - Eband))*de
         
     if(rank==0):
@@ -86,18 +85,15 @@ while (not converged and iloop<ed.vars.Nloop ):
 
     #Get the Delta function and FIT:    
     Delta[0,0,0,0,:] = 0.25*wband*Gmats[0,0,0,0,:]
-    print(bath_prev[0],bath[0])
     if(rank==0):
         np.savetxt('Delta_iw.dat', np.transpose([wm,Delta[0,0,0,0,:].imag,Delta[0,0,0,0,:].real]))
     ed.chi2_fitgf(Delta,bath,ispin=1,iorb=1)
     
-    print(bath_prev[0],bath[0])
     if(iloop>1):
         bath = wmixing*bath + (1.0-wmixing)*bath_prev
     bath_prev=np.copy(bath)
  
-    err,converged=ed.check_convergence(Delta[0,0,0,0,:],ed.vars.dmft_error,1,ed.vars.Nloop)
-    print(converged)
+    err,converged=ed.check_convergence(Delta[0,0,0,0,:],ed.dmft_error,1,ed.Nloop)
 
 print("Done...")
 
