@@ -1,5 +1,8 @@
 # EDIpack: A *parallel* Exact Diagonalization solver for Quantum Impurity problems
 
+
+C bindings test branch
+
 A Lanczos based solver for generic quantum impurity models exploiting distributed memory MPI parallelisation. This software focuses on the *normal* case (as opposed to superconducting or spin non-conserving cases) including long range magnetic ordering and arbitrary unit cells. 
 See [j.cpc.2021.108261](https://doi.org/10.1016/j.cpc.2021.108261). 
 
