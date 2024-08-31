@@ -66,8 +66,6 @@ while (not converged and iloop<ed.Nloop ):
     #Get Self-energies
     ed.get_sigma_matsubara(Smats)
     ed.get_sigma_realaxis(Sreal)
-    
-
 
     #Compute the local gf:
     for i in range(ed.Lmats):

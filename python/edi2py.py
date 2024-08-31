@@ -122,6 +122,7 @@ def get_bath_dimension(self):
 # ED_IO FUNCTIONS
 ######################################
 
+#sigma_matsubara
 get_sigma_matsubara_site = libedi2py.get_sigma_matsubara_site
 get_sigma_matsubara_site.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=5, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
 get_sigma_matsubara_site.restype = None
@@ -130,6 +131,14 @@ get_sigma_matsubara_ineq = libedi2py.get_sigma_matsubara_ineq
 get_sigma_matsubara_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=6, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
 get_sigma_matsubara_ineq.restype = None
 
+def get_sigma_matsubara(self,Smats):
+    dim_Smats=np.shape(Smats)
+    if len(dim_Smats)==5:
+        get_sigma_matsubara_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4])
+    else:
+        get_sigma_matsubara_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4],dim_Smats[5])
+
+#sigma_realaxis
 get_sigma_realaxis_site = libedi2py.get_sigma_realaxis_site
 get_sigma_realaxis_site.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=5, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
 get_sigma_realaxis_site.restype = None
@@ -138,19 +147,46 @@ get_sigma_realaxis_ineq = libedi2py.get_sigma_matsubara_ineq
 get_sigma_realaxis_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=6, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
 get_sigma_realaxis_ineq.restype = None
 
-def get_sigma_matsubara(self,Smats):
-    dim_Smats=np.shape(Smats)
-    if len(dim_Smats)==5:
-        get_sigma_matsubara_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4])
-    else:
-        get_sigma_matsubara_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4],dim_Smats[5])
         
-def get_sigma_realaxis(self,Smats):
-    dim_Smats=np.shape(Smats)
-    if len(dim_Smats)==5:
-        get_sigma_realaxis_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4])
+def get_sigma_realaxis(self,Sreal):
+    dim_Sreal=np.shape(Sreal)
+    if len(dim_Sreal)==5:
+        get_sigma_realaxis_site(Sreal,dim_Sreal[0],dim_Sreal[1],dim_Sreal[2],dim_Sreal[3],dim_Sreal[4])
     else:
-        get_sigma_realaxis_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4],dim_Smats[5])
+        get_sigma_realaxis_site(Sreal,dim_Sreal[0],dim_Sreal[1],dim_Sreal[2],dim_Sreal[3],dim_Sreal[4],dim_Sreal[5])
+        
+#gimp_matsubara
+get_gimp_matsubara_site = libedi2py.get_gimp_matsubara_site
+get_gimp_matsubara_site.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=5, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
+get_gimp_matsubara_site.restype = None
+
+get_gimp_matsubara_ineq = libedi2py.get_gimp_matsubara_ineq
+get_gimp_matsubara_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=6, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
+get_gimp_matsubara_ineq.restype = None
+
+def get_gimp_matsubara(self,Gmats):
+    dim_Gmats=np.shape(Gmats)
+    if len(dim_Gmats)==5:
+        get_gimp_matsubara_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4])
+    else:
+        get_gimp_matsubara_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4],dim_Gmats[5])
+
+#gimp_realaxis
+get_gimp_realaxis_site = libedi2py.get_gimp_realaxis_site
+get_gimp_realaxis_site.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=5, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
+get_gimp_realaxis_site.restype = None
+
+get_gimp_realaxis_ineq = libedi2py.get_gimp_matsubara_ineq
+get_gimp_realaxis_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=6, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int,c_int,c_int]  # allows for automatic type conversion
+get_gimp_realaxis_ineq.restype = None
+
+        
+def get_gimp_realaxis(self,Gmats):
+    dim_Gmats=np.shape(Gmats)
+    if len(dim_Gmats)==5:
+        get_gimp_realaxis_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4])
+    else:
+        get_gimp_realaxis_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4],dim_Gmats[5])
         
 
 ######################################
@@ -231,5 +267,7 @@ global_env.solve = types.MethodType(solve, global_env)
 global_env.get_bath_dimension = types.MethodType(get_bath_dimension, global_env)
 global_env.get_sigma_matsubara = types.MethodType(get_sigma_matsubara, global_env)
 global_env.get_sigma_realaxis = types.MethodType(get_sigma_realaxis, global_env)
+global_env.get_gimp_matsubara = types.MethodType(get_gimp_matsubara, global_env)
+global_env.get_gimp_realaxis = types.MethodType(get_gimp_realaxis, global_env)
 global_env.chi2_fitgf = types.MethodType(chi2_fitgf, global_env)
 global_env.check_convergence = types.MethodType(check_convergence, global_env)

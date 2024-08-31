@@ -35,50 +35,38 @@ end subroutine get_sigma_realaxis_ineq_c
 
 
 
-!subroutine get_gimp_matsubara_site(gimp)
-!  USE EDIPACK, only: ed_get_gimp_matsubara,Nspin,Norb,Lmats
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  complex(8),dimension(:,:,:,:,:),intent(inout) :: gimp
-!  call assert_shape(gimp,[Nspin,Nspin,Norb,Norb,Lmats],"get_gimp_matsubara","Gimp")
-!  call ed_get_gimp_matsubara(gimp)
-!end subroutine get_gimp_matsubara_site
+subroutine get_gimp_matsubara_site_c(gimp,dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5) bind(c, name='get_gimp_matsubara_site')
+  integer(c_int),value  :: dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5
+  complex(c_double_complex),dimension(dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5),intent(inout) :: gimp
+  call assert_shape(gimp,[Nspin,Nspin,Norb,Norb,Lmats],"get_gimp_matsubara","gimp")
+  call ed_get_gimp_matsubara(gimp)
+end subroutine get_gimp_matsubara_site_c
 !
-!subroutine get_gimp_matsubara_ineq(gimp)
-!  USE EDIPACK, only: ed_get_gimp_matsubara,Nspin,Norb,Lmats
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  complex(8),dimension(:,:,:,:,:,:),intent(inout) :: gimp
-!  integer                                         :: Nsites
-!  Nsites=size(gimp,1)
-!  call assert_shape(gimp,[Nsites,Nspin,Nspin,Norb,Norb,Lmats],"get_gimp_matsubara","Gimp")
-!  call ed_get_gimp_matsubara(gimp,Nsites)
-!end subroutine get_gimp_matsubara_ineq
+subroutine get_gimp_matsubara_ineq_c(gimp,dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6) bind(c, name='get_gimp_matsubara_ineq')
+  integer(c_int),value  :: dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6
+  integer(c_int) :: Nsites
+  complex(c_double_complex),dimension(dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6),intent(inout) :: gimp
+  Nsites=size(gimp,1)
+  call assert_shape(gimp,[Nsites,Nspin,Nspin,Norb,Norb,Lmats],"get_gimp_matsubara","gimp")
+  call ed_get_gimp_matsubara(gimp,Nsites)
+end subroutine get_gimp_matsubara_ineq_c
 
 
-
-!subroutine get_gimp_realaxis_site(gimp)
-!  USE EDIPACK, only: ed_get_gimp_realaxis,Nspin,Norb,Lreal
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  complex(8),dimension(:,:,:,:,:),intent(inout) :: gimp
-!  call assert_shape(gimp,[Nspin,Nspin,Norb,Norb,Lreal],"get_gimp_realaxis","gimp")
-!  call ed_get_gimp_realaxis(gimp)
-!end subroutine get_gimp_realaxis_site
+subroutine get_gimp_realaxis_site_c(gimp,dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5)  bind(c, name='get_gimp_realaxis_site')
+  integer(c_int),value  :: dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5
+  complex(c_double_complex),dimension(dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5),intent(inout) :: gimp
+  call assert_shape(gimp,[Nspin,Nspin,Norb,Norb,Lreal],"get_gimp_realaxis","gimp")
+  call ed_get_gimp_realaxis(gimp)
+end subroutine get_gimp_realaxis_site_c
 !
-!subroutine get_gimp_realaxis_ineq(gimp)
-!  USE EDIPACK, only: ed_get_gimp_realaxis,Nspin,Norb,Lreal
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  complex(8),dimension(:,:,:,:,:,:),intent(inout) :: gimp
-!  integer                                         :: Nsites
-!  Nsites=size(gimp,1)
-!  call assert_shape(gimp,[Nsites,Nspin,Nspin,Norb,Norb,Lreal],"get_gimp_realaxis","gimp")
-!  call ed_get_gimp_realaxis(gimp,Nsites)
-!end subroutine get_gimp_realaxis_ineq
-
-
-
+subroutine get_gimp_realaxis_ineq_c(gimp,dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6)  bind(c, name='get_gimp_realaxis_ineq')
+  integer(c_int),value  :: dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6
+  integer(c_int) :: Nsites
+  complex(c_double_complex),dimension(dim_gimp_1,dim_gimp_2,dim_gimp_3,dim_gimp_4,dim_gimp_5,dim_gimp_6),intent(inout) :: gimp
+  Nsites=size(gimp,1)
+  call assert_shape(gimp,[Nsites,Nspin,Nspin,Norb,Norb,Lreal],"get_gimp_realaxis","gimp")
+  call ed_get_gimp_realaxis(gimp,Nsites)
+end subroutine get_gimp_realaxis_ineq_c
 
 
 
