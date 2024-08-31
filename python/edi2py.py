@@ -44,7 +44,7 @@ def add_global_variable(obj, dynamic_name, target_object, target_attribute):
     setattr(obj.__class__, dynamic_name, setter)
 
 #create the class containing all the global variables
-global_env=Link()
+
 
 ######################################
 # Load shared library with C-bindings
@@ -53,27 +53,6 @@ global_env=Link()
 libpath = os.path.dirname(os.path.realpath(__file__))
 libfile = os.path.join(libpath, 'libedi2py.so')
 libedi2py = CDLL(libfile)
-
-######################################
-# GLOBAL VARIABLES
-######################################
-
-
-add_global_variable(global_env, "Nbath", c_int.in_dll(libedi2py, "Nbath"), "value")
-add_global_variable(global_env, "Norb", c_int.in_dll(libedi2py, "Norb"), "value")
-add_global_variable(global_env, "Nspin", c_int.in_dll(libedi2py, "Nspin"), "value")
-add_global_variable(global_env, "Nloop", c_int.in_dll(libedi2py, "Nloop"), "value")
-add_global_variable(global_env, "Nph", c_int.in_dll(libedi2py, "Nph"), "value")
-add_global_variable(global_env, "Uloc", ARRAY(c_double, 5).in_dll(libedi2py, "Uloc"), "value")
-add_global_variable(global_env, "Ust", c_double.in_dll(libedi2py, "Ust"), "value")
-add_global_variable(global_env, "beta", c_double.in_dll(libedi2py, "beta"), "value")
-add_global_variable(global_env, "Lmats", c_int.in_dll(libedi2py, "Lmats"), "value")
-add_global_variable(global_env, "Lreal", c_int.in_dll(libedi2py, "Lreal"), "value")
-add_global_variable(global_env, "wini", c_double.in_dll(libedi2py, "wini"), "value")
-add_global_variable(global_env, "wfin", c_double.in_dll(libedi2py, "wfin"), "value")
-add_global_variable(global_env, "eps", c_double.in_dll(libedi2py, "eps"), "value")
-add_global_variable(global_env, "dmft_error", c_double.in_dll(libedi2py, "dmft_error"), "value")
-
 
 ######################################
 # READ_INPUT
@@ -87,11 +66,6 @@ def read_input(self,input_string):
     c_string = c_char_p(input_string.encode())
     read_input_wrap(c_string)
     
-def printstring(self,string):
-    return string
-
-global_env.read_input = types.MethodType(read_input, global_env)
-
 ######################################
 # ED_MAIN FUNCTIONS
 ######################################
@@ -132,8 +106,6 @@ def solve(self,bath,hloc,sflag=True,mpi_lanc=False):
     else:
         solve_ineq(bath,dim_bath[0],dim_bath[1],hloc,dim_hloc[0],dim_hloc[1],dim_hloc[2],dim_hloc[3],dim_hloc[4],mpi_lanc)
         
-global_env.init_solver = types.MethodType(init_solver, global_env)
-global_env.solve = types.MethodType(solve, global_env)
 
 ######################################
 # ED_BATH FUNCTIONS
@@ -146,7 +118,6 @@ get_bath_dimension_wrap.restype = c_int
 def get_bath_dimension(self):
     return get_bath_dimension_wrap()
     
-global_env.get_bath_dimension = types.MethodType(get_bath_dimension, global_env)
 ######################################
 # ED_IO FUNCTIONS
 ######################################
@@ -181,8 +152,6 @@ def get_sigma_realaxis(self,Smats):
     else:
         get_sigma_realaxis_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4],dim_Smats[5])
         
-global_env.get_sigma_matsubara = types.MethodType(get_sigma_matsubara, global_env)
-global_env.get_sigma_realaxis = types.MethodType(get_sigma_realaxis, global_env)
 
 ######################################
 # ED_BATH_FIT FUNCTIONS
@@ -208,7 +177,7 @@ def chi2_fitgf(self,func,bath,hloc=None,ispin=1,iorb=0):
     else:
         chi2_fitgf_ineq(func,dim_func[0],dim_func[1],dim_func[2],dim_func[3],dim_func[4],dim_func[5],bath,dim_bath[0],dim_bath[1],hloc,dim_hloc[0],dim_hloc[1],dim_hloc[2],dim_hloc[3],dim_hloc[4],ispin)
         
-global_env.chi2_fitgf = types.MethodType(chi2_fitgf, global_env)
+
 
 ######################################
 # ED_AUX_FUNX FUNCTIONS
@@ -229,4 +198,38 @@ def check_convergence(self,func,threshold,N1,N2):
         conv_bool=True
     return err[0],conv_bool
     
+
+
+
+####################################################################
+# Create the global_env class (this is what the python module sees)
+####################################################################
+
+global_env=Link()
+
+#variables
+add_global_variable(global_env, "Nbath", c_int.in_dll(libedi2py, "Nbath"), "value")
+add_global_variable(global_env, "Norb", c_int.in_dll(libedi2py, "Norb"), "value")
+add_global_variable(global_env, "Nspin", c_int.in_dll(libedi2py, "Nspin"), "value")
+add_global_variable(global_env, "Nloop", c_int.in_dll(libedi2py, "Nloop"), "value")
+add_global_variable(global_env, "Nph", c_int.in_dll(libedi2py, "Nph"), "value")
+add_global_variable(global_env, "Uloc", ARRAY(c_double, 5).in_dll(libedi2py, "Uloc"), "value")
+add_global_variable(global_env, "Ust", c_double.in_dll(libedi2py, "Ust"), "value")
+add_global_variable(global_env, "beta", c_double.in_dll(libedi2py, "beta"), "value")
+add_global_variable(global_env, "Lmats", c_int.in_dll(libedi2py, "Lmats"), "value")
+add_global_variable(global_env, "Lreal", c_int.in_dll(libedi2py, "Lreal"), "value")
+add_global_variable(global_env, "wini", c_double.in_dll(libedi2py, "wini"), "value")
+add_global_variable(global_env, "wfin", c_double.in_dll(libedi2py, "wfin"), "value")
+add_global_variable(global_env, "eps", c_double.in_dll(libedi2py, "eps"), "value")
+add_global_variable(global_env, "dmft_error", c_double.in_dll(libedi2py, "dmft_error"), "value")
+
+#functions
+
+global_env.read_input = types.MethodType(read_input, global_env)
+global_env.init_solver = types.MethodType(init_solver, global_env)
+global_env.solve = types.MethodType(solve, global_env)
+global_env.get_bath_dimension = types.MethodType(get_bath_dimension, global_env)
+global_env.get_sigma_matsubara = types.MethodType(get_sigma_matsubara, global_env)
+global_env.get_sigma_realaxis = types.MethodType(get_sigma_realaxis, global_env)
+global_env.chi2_fitgf = types.MethodType(chi2_fitgf, global_env)
 global_env.check_convergence = types.MethodType(check_convergence, global_env)
