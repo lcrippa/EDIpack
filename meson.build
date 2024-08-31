@@ -1,5 +1,6 @@
 project('edipy', 'fortran')
 
+
 scifor_dep= dependency('scifor', required:true)
 edipack_dep= dependency('edipack', required:true)
 
@@ -9,6 +10,7 @@ fortran_src = ['src/INPUT_VARS.f90','src/edi2py/edi2py.f90']
 
 library('edi2py', 
                     fortran_src,
+                    fortran_args: ['-ffree-line-length-none', '-cpp', '-D_MPI'],
                     dependencies: [scifor_dep,edipack_dep],
                     install: true,
                     install_dir: 'edipy'
