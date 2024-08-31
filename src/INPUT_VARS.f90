@@ -3,32 +3,35 @@ MODULE ED_INPUT_VARS
   USE SF_PARSE_INPUT
   USE SF_IOTOOLS, only:str
   USE ED_VERSION
+  use iso_c_binding
   implicit none
+  
 
   !input variables
   !=========================================================
-  integer              :: Nbath               !Nbath=# of bath sites (per orbital or not depending on bath_type)
-  integer              :: Norb                !Norb =# of impurity orbitals
-  integer              :: Nspin               !Nspin=# spin degeneracy (max 2)
+  integer(c_int), bind(c, name="Nbath") :: Nbath               !Nbath=# of bath sites (per orbital or not depending on bath_type)
+  integer(c_int), bind(c, name="Norb")  :: Norb                !Norb =# of impurity orbitals
+  integer(c_int), bind(c, name="Nspin") :: Nspin              !Nspin=# spin degeneracy (max 2)
 
-  integer              :: nloop               !max dmft loop variables
-  integer              :: Nph                 !max number of phonons allowed (cut off)
-  real(8),dimension(5) :: Uloc                !local interactions
-  real(8)              :: Ust                 !intra-orbitals interactions
+  integer(c_int), bind(c, name="Nloop")             :: Nloop               !max dmft loop variables
+  integer(c_int), bind(c, name="Nph")               :: Nph                 !max number of phonons allowed (cut off)
+  real(c_double),dimension(5), bind(c, name="Uloc") :: Uloc                !local interactions
+  real(c_double),bind(c, name="Ust")                :: Ust                 !intra-orbitals interactions
   real(8)              :: Jh                  !J_Hund: Hunds' coupling constant 
   real(8)              :: Jx                  !J_X: coupling constant for the spin-eXchange interaction term
   real(8)              :: Jp                  !J_P: coupling constant for the Pair-hopping interaction term 
   real(8)              :: xmu                 !chemical potential
-  real(8)              :: beta                !inverse temperature
+  real(c_double),bind(c, name="beta")       :: beta                !inverse temperature
   !
   integer              :: ph_type             !shape of the e part of the e-ph interaction: 1=orbital occupation, 2=orbital hybridization
   real(8),dimension(10):: g_ph                !g_ph: electron-phonon coupling constant
   real(8)              :: w0_ph               !w0_ph: phonon frequency (constant)
   !
   integer              :: Nsuccess            !# of repeated success to fall below convergence threshold  
-  real(8)              :: dmft_error          !dmft convergence threshold
-  real(8)              :: eps                 !broadening
-  real(8)              :: wini,wfin           !frequency range
+  real(c_double),bind(c, name="dmft_error")              :: dmft_error          !dmft convergence threshold
+  real(c_double),bind(c, name="eps")              :: eps                 !broadening
+  real(c_double),bind(c, name="wini")              :: wini           !frequency range min
+  real(c_double),bind(c, name="wfin")              :: wfin                !frequency range max
   real(8)              :: xmin,xmax           !x-range for the local lattice probability distribution function (phonons)
   logical              :: HFmode              !flag for HF interaction form U(n-1/2)(n-1/2) VS Unn
   real(8)              :: cutoff              !cutoff for spectral summation
@@ -88,8 +91,8 @@ MODULE ED_INPUT_VARS
 
   !Some parameters for function dimension:
   !=========================================================
-  integer              :: Lmats
-  integer              :: Lreal
+  integer(c_int), bind(c, name="Lmats")             :: Lmats
+  integer(c_int), bind(c, name="Lreal")             :: Lreal
 
   integer              :: Ltau
   integer              :: Lpos
