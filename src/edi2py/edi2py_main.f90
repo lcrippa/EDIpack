@@ -14,20 +14,20 @@ end subroutine init_solver_ineq_c
 
 subroutine solve_site_c(bath,dim_bath_1,hloc,dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4,sflag) bind(c, name='solve_site')
   integer(c_int),value                                                               :: dim_bath_1,dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4
-  logical(kind=4),value                                                              :: sflag
+  integer(c_int),value                                                               :: sflag
   real(c_double),dimension(dim_bath_1),intent(in)                                    :: bath
   real(c_double),dimension(dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4),intent(in)   :: hloc
   call assert_shape(hloc,[Nspin,Nspin,Norb,Norb],"solve","hloc")
-  call ed_solve(bath,hloc,sflag=sflag)
+  call ed_solve(bath,hloc,sflag=i2l(sflag))
 end subroutine solve_site_c
 !
 subroutine solve_ineq_c(bath,dim_bath_1,dim_bath_2,hloc,dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4,dim_hloc_5,mpi_lanc) bind(c, name='solve_ineq')
   integer(c_int),value                                                                        :: dim_bath_1,dim_bath_2,dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4,dim_hloc_5
-  logical(kind=4),value                                                                        :: mpi_lanc
+  integer(c_int),value                                                                        :: mpi_lanc
   real(c_double),dimension(dim_bath_1,dim_bath_2),intent(in)                                  :: bath
   real(c_double),dimension(dim_hloc_1,dim_hloc_2,dim_hloc_3,dim_hloc_4,dim_hloc_5),intent(in) :: hloc
   integer                                                                                     :: Nineq
   Nineq = size(bath,1)
   call assert_shape(Hloc,[Nineq,Nspin,Nspin,Norb,Norb],"solve","hloc")  
-  call ed_solve(bath,hloc,mpi_lanc)
+  call ed_solve(bath,hloc,i2l(mpi_lanc))
 end subroutine solve_ineq_c
