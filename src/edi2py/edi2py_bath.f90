@@ -49,12 +49,6 @@ end function get_bath_dimension_c
 
 
 
-
-
-
-
-
-
 !BREAK_SYMMETRY_BATH
 !subroutine break_symmetry_bath_site(bath,field,sign,save)
 !  USE EDIPACK, only: ed_break_symmetry_bath

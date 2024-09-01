@@ -70,100 +70,80 @@ end subroutine get_gimp_realaxis_ineq_c
 
 
 
-!subroutine get_dens_site(arg)
-!  USE EDIPACK, only: ed_get_dens,Norb
-!  implicit none
-!  real(8),dimension(:),intent(out) :: arg
-!  if(size(arg)/=Norb)stop "get_dens error: size(arg)!=Norb"
-!  call ed_get_dens(arg)
-!end subroutine get_dens_site
+subroutine get_dens_site_c(arg,arg_dim1) bind(c, name='get_dens_site')
+  integer(c_int),value                    :: arg_dim1
+  real(c_double),dimension(arg_dim1)      :: arg
+  call assert_shape(arg,[Norb],"get_dens_site","arg")
+  call ed_get_dens(arg)
+end subroutine get_dens_site_c
 !
-!subroutine get_dens_ineq(arg,nlat)
-!  USE EDIPACK, only: ed_get_dens,Norb
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(out) :: arg
-!  integer,intent(in)                 :: nlat
-!  call assert_shape(arg,[Nlat,Norb],"get_dens_ineq","arg")  
-!  call ed_get_dens(arg,nlat)
-!end subroutine get_dens_ineq
+subroutine get_dens_ineq_c(arg,arg_dim1,arg_dim2,nlat) bind(c, name='get_dens_ineq')
+  integer(c_int),value                          :: arg_dim1,arg_dim2,nlat
+  real(c_double),dimension(arg_dim1,arg_dim2)   :: arg
+  call assert_shape(arg,[Nlat,Norb],"get_dens_ineq","arg")  
+  call ed_get_dens(arg,nlat)
+end subroutine get_dens_ineq_c
 
 
 
-!subroutine get_mag_site(arg)
-!  USE EDIPACK, only: ed_get_mag,Norb
-!  implicit none
-!  real(8),dimension(:),intent(out) :: arg
-!  if(size(arg)/=Norb)stop "get_mag error: size(arg)!=Norb"
-!  call ed_get_mag(arg)
-!end subroutine get_mag_site
+subroutine get_mag_site_c(arg,arg_dim1) bind(c, name='get_mag_site')
+  integer(c_int),value               :: arg_dim1
+  real(c_double),dimension(arg_dim1) :: arg
+  call assert_shape(arg,[Norb],"get_mag_site","arg")  
+  call ed_get_mag(arg)
+end subroutine get_mag_site_c
 !
-!subroutine get_mag_ineq(arg,nlat)
-!  USE EDIPACK, only: ed_get_mag,Norb
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(out) :: arg
-!  integer,intent(in)                 :: nlat
-!  call assert_shape(arg,[Nlat,Norb],"get_mag_ineq","arg")  
-!  call ed_get_mag(arg,nlat)
-!end subroutine get_mag_ineq
+subroutine get_mag_ineq_c(arg,arg_dim1,arg_dim2,nlat) bind(c, name='get_mag_ineq')
+  integer(c_int),value                        :: arg_dim1,arg_dim2,nlat
+  real(c_double),dimension(arg_dim1,arg_dim2) :: arg
+  call assert_shape(arg,[Nlat,Norb],"get_mag_ineq","arg")  
+  call ed_get_mag(arg,nlat)
+end subroutine get_mag_ineq_c
 
 
-!subroutine get_docc_site(arg)
-!  USE EDIPACK, only: ed_get_docc,Norb
-!  implicit none
-!  real(8),dimension(:),intent(out) :: arg
-!  if(size(arg)/=Norb)stop "get_docc error: size(arg)!=Norb"
-!  call ed_get_docc(arg)
-!end subroutine get_docc_site
+subroutine get_docc_site_c(arg,arg_dim1) bind(c, name='get_docc_site')
+  integer(c_int),value                    :: arg_dim1
+  real(c_double),dimension(arg_dim1)      :: arg
+  call assert_shape(arg,[Norb],"get_doc_site","arg")  
+  call ed_get_docc(arg)
+end subroutine get_docc_site_c
 !
-!subroutine get_docc_ineq(arg,nlat)
-!  USE EDIPACK, only: ed_get_docc,Norb
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(out) :: arg
-!  integer,intent(in)                 :: nlat
-!  call assert_shape(arg,[Nlat,Norb],"get_docc_ineq","arg")  
-!  call ed_get_docc(arg,nlat)
-!end subroutine get_docc_ineq
+subroutine get_docc_ineq_c(arg,arg_dim1,arg_dim2,nlat) bind(c, name='get_docc_ineq')
+  integer(c_int),value                        :: arg_dim1,arg_dim2,nlat
+  real(c_double),dimension(arg_dim1,arg_dim2) :: arg
+  call assert_shape(arg,[Nlat,Norb],"get_docc_ineq","arg")  
+  call ed_get_docc(arg,nlat)
+end subroutine get_docc_ineq_c
 
 
 
-!subroutine get_eimp_site(arg)
-!  USE EDIPACK, only: ed_get_eimp
-!  implicit none
-!  real(8),dimension(4),intent(out) :: arg
-!  call ed_get_eimp(arg)
-!end subroutine get_eimp_site
+subroutine get_eimp_site_c(arg) bind(c, name='get_eimp_site')
+  real(c_double),dimension(4) :: arg
+  call assert_shape(arg,[4],"get_eimp_site","arg")
+  call ed_get_eimp(arg)
+end subroutine get_eimp_site_c
 !
-!subroutine get_eimp_ineq(arg,nlat)
-!  USE EDIPACK, only: ed_get_eimp
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(out) :: arg
-!  integer,intent(in)                 :: nlat
-!  call assert_shape(arg,[Nlat,4],"get_eimp_ineq","arg")  
-!  call ed_get_eimp(arg,nlat)
-!end subroutine get_eimp_ineq
+subroutine get_eimp_ineq_c(arg,nlat) bind(c, name='get_eimp_ineq')
+  integer(c_int),value                        :: nlat
+  real(c_double),dimension(Nlat,4) :: arg
+  call assert_shape(arg,[Nlat,4],"get_eimp_ineq","arg")  
+  call ed_get_eimp(arg,nlat)
+end subroutine get_eimp_ineq_c
 
 
 
-!subroutine get_doubles_site(arg)
-!  USE EDIPACK, only: ed_get_doubles
-!  implicit none
-!  real(8),dimension(4),intent(out) :: arg
-!  call ed_get_doubles(arg)
-!end subroutine get_doubles_site
+subroutine get_doubles_site_c(arg) bind(c, name='get_doubles_site')
+  real(c_double),dimension(4) :: arg
+  call assert_shape(arg,[4],"get_doubles_site","arg")
+  call ed_get_doubles(arg)
+end subroutine get_doubles_site_c
 !
-!subroutine get_doubles_ineq(arg,nlat)
-!  USE EDIPACK, only: ed_get_doubles
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(out) :: arg
-!  integer,intent(in)                 :: nlat
-!  call assert_shape(arg,[Nlat,4],"get_doubles_ineq","arg")  
-!  call ed_get_doubles(arg,nlat)
-!end subroutine get_doubles_ineq
+subroutine get_doubles_ineq_c(arg,nlat) bind(c, name='get_doubles_ineq')
+  integer(c_int),value             :: nlat
+  real(c_double),dimension(Nlat,4) :: arg
+  call assert_shape(arg,[Nlat,4],"get_doubles_ineq","arg")  
+  call ed_get_doubles(arg,nlat)
+end subroutine get_doubles_ineq_c
 
 
 

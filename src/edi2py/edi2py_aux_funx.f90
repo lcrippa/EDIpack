@@ -1,14 +1,13 @@
 !ED_AUX_FUNX:
-!subroutine search_variable(var,ntmp,converged) bind(c, name='search_variable')
-!  USE EDIPACK, only: ed_search_variable
-!  implicit none
-!  real(c_double),intent(inout) :: var
-!  real(c_double),intent(in)    :: ntmp
-!  logical,intent(out)   :: converged
-!  logical               :: bool
-!  call ed_search_variable(var,ntmp,bool)
-!  converged=bool
-!end subroutine search_variable
+subroutine search_variable(var,ntmp,converged) bind(c, name='search_variable')
+  real(c_double),dimension(1)         :: var(1)
+  real(c_double),dimension(1)         :: ntmp(1)
+  integer(c_int),dimension(1)         :: converged(1)
+  logical                             :: bool
+  converged(1)=0
+  call ed_search_variable(var(1),ntmp(1),bool)
+  if (bool) converged(1)=1
+end subroutine search_variable
 
 
 
@@ -21,7 +20,7 @@ subroutine check_convergence(Xnew,dim_xnew,eps,N1,N2,oerr,convergence) bind(c, n
   integer(c_int),value               :: N1,N2
   real(c_double),dimension(1)        :: oerr(1)
   integer(c_int),dimension(1)        :: convergence(1)  
-  integer                            :: i,j,Msum
+  integer                            :: i,Msum
   real(c_double)                     :: err
   real(c_double)                     :: M,S
   complex(8),save,allocatable        :: Xold(:)
