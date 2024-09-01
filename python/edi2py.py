@@ -203,15 +203,15 @@ def get_dens(self,Nlat=-1,iorb=-1):
     if (Nlat < 0):
         dens = np.zeros((aux_norb),dtype='float',order='F')
         get_dens_site(dens,aux_norb)
-        if(iorb>0):
-            return dens[iorb-1]
+        if(iorb > -1):
+            return dens[iorb]
         else:
             return dens
     else:
         dens = np.zeros((Nlat,aux_norb),dtype='float',order='F')
         get_dens_ineq(dens,Nlat,aux_norb,Nlat)
-        if(iorb>0):
-            return dens[iorb-1]
+        if(iorb > -1):
+            return dens[iorb]
         else:
             return dens
         
@@ -230,15 +230,15 @@ def get_mag(self,Nlat=-1,iorb=-1):
     if (Nlat < 0):
         mag = np.zeros((aux_norb),dtype='float',order='F')
         get_mag_site(mag,aux_norb)
-        if(iorb>0):
-            return mag[iorb-1]
+        if(iorb > -1):
+            return mag[iorb]
         else:
             return mag
     else:
         mag = np.zeros((Nlat,aux_norb),dtype='float',order='F')
         get_mag_ineq(mag,Nlat,aux_norb,Nlat)
-        if(iorb>0):
-            return mag[iorb-1]
+        if(iorb > -1):
+            return mag[iorb]
         else:
             return mag
 
@@ -256,15 +256,15 @@ def get_docc(self,Nlat=-1,iorb=-1):
     if (Nlat < 0):
         docc = np.zeros((aux_norb),dtype='float',order='F')
         get_docc_site(docc,aux_norb)
-        if(iorb>0):
-            return docc[iorb-1]
+        if(iorb > -1):
+            return docc[iorb]
         else:
             return docc
     else:
         docc = np.zeros((Nlat,aux_norb),dtype='float',order='F')
         get_docc_ineq(docc,Nlat,aux_norb,Nlat)
-        if(iorb>0):
-            return docc[iorb-1]
+        if(iorb > -1):
+            return docc[iorb]
         else:
             return docc
         
