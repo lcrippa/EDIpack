@@ -137,6 +137,7 @@ def get_sigma_matsubara(self,Smats):
         get_sigma_matsubara_site(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4])
     else:
         get_sigma_matsubara_ineq(Smats,dim_Smats[0],dim_Smats[1],dim_Smats[2],dim_Smats[3],dim_Smats[4],dim_Smats[5])
+    return Smats
 
 #sigma_realaxis
 get_sigma_realaxis_site = libedi2py.get_sigma_realaxis_site
@@ -154,6 +155,7 @@ def get_sigma_realaxis(self,Sreal):
         get_sigma_realaxis_site(Sreal,dim_Sreal[0],dim_Sreal[1],dim_Sreal[2],dim_Sreal[3],dim_Sreal[4])
     else:
         get_sigma_realaxis_ineq(Sreal,dim_Sreal[0],dim_Sreal[1],dim_Sreal[2],dim_Sreal[3],dim_Sreal[4],dim_Sreal[5])
+    return Sreal
         
 #gimp_matsubara
 get_gimp_matsubara_site = libedi2py.get_gimp_matsubara_site
@@ -170,6 +172,7 @@ def get_gimp_matsubara(self,Gmats):
         get_gimp_matsubara_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4])
     else:
         get_gimp_matsubara_ineq(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4],dim_Gmats[5])
+    return Gmats
 
 #gimp_realaxis
 get_gimp_realaxis_site = libedi2py.get_gimp_realaxis_site
@@ -181,12 +184,13 @@ get_gimp_realaxis_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=complex,ndim=6, 
 get_gimp_realaxis_ineq.restype = None
 
         
-def get_gimp_realaxis(self,Gmats):
-    dim_Gmats=np.shape(Gmats)
-    if len(dim_Gmats)==5:
-        get_gimp_realaxis_site(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4])
+def get_gimp_realaxis(self,Greal):
+    dim_Greal=np.shape(Greal)
+    if len(dim_Greal)==5:
+        get_gimp_realaxis_site(Greal,dim_Greal[0],dim_Greal[1],dim_Greal[2],dim_Greal[3],dim_Greal[4])
     else:
-        get_gimp_realaxis_ineq(Gmats,dim_Gmats[0],dim_Gmats[1],dim_Gmats[2],dim_Gmats[3],dim_Gmats[4],dim_Gmats[5])
+        get_gimp_realaxis_ineq(Greal,dim_Greal[0],dim_Greal[1],dim_Greal[2],dim_Greal[3],dim_Greal[4],dim_Greal[5])
+    return Greal
         
         
 #dens
