@@ -4,47 +4,29 @@ integer(c_int) function get_bath_dimension_c() result(Nb) bind(c, name='get_bath
 end function get_bath_dimension_c
 
 !H_REPLICA SETUP
-!subroutine init_Hreplica_direct_nn(Hloc)
-!  USE EDIPACK, only: ed_set_Hreplica,Norb,Nspin
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:,:,:),intent(inout) :: Hloc
-!  call assert_shape(hloc,[Nspin,Nspin,Norb,Norb],"init_Hreplica_direct_nn","hloc")  
-!  call ed_set_Hreplica(hloc)
-!end subroutine init_Hreplica_direct_nn
+subroutine init_Hreplica_direct_nn_c(Hloc) bind(c, name='init_Hreplica_direct_nn')
+  real(c_double),dimension(Nspin,Nspin,Norb,Norb) :: Hloc
+  call ed_set_Hreplica(hloc)
+end subroutine init_Hreplica_direct_nn_c
 
-!subroutine init_Hreplica_direct_so(Hloc)
-!  USE EDIPACK, only: ed_set_Hreplica,Norb,Nspin
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: Hloc
-!  call assert_shape(hloc,[Nspin*Norb,Nspin*Norb],"init_Hreplica_direct_so","hloc")  
-!  call ed_set_Hreplica(hloc)
-!end subroutine init_Hreplica_direct_so
+subroutine init_Hreplica_direct_so_c(Hloc) bind(c, name='init_Hreplica_direct_so')
+  real(c_double),dimension(Nspin*Norb,Nspin*Norb) :: Hloc 
+  call ed_set_Hreplica(hloc)
+end subroutine init_Hreplica_direct_so_c
 
-!subroutine init_Hreplica_symmetries_site(Hvec,lambdavec)
-!  USE EDIPACK, only: ed_set_Hreplica,Norb,Nspin
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:,:,:,:),intent(inout) :: Hvec
-!  real(8),dimension(:),intent(inout)         :: lambdavec
-!  integer                                    :: Nsym
-!  Nsym = size(lambdavec)
-!  call assert_shape(Hvec,[Nspin,Nspin,Norb,Norb,Nsym],"init_Hreplica_symmetries_site","Hvec")  
-!  call ed_set_Hreplica(Hvec,lambdavec)
-!end subroutine init_Hreplica_symmetries_site
+subroutine init_Hreplica_symmetries_site_c(Hvec,lambdavec,Nsym) bind(c, name='init_Hreplica_symmetries_site')
+  integer(c_int),value                                     :: Nsym
+  real(c_double),dimension(Nspin,Nspin,Norb,Norb,Nsym)     :: Hvec
+  real(c_double),dimension(Nsym)                           :: lambdavec
+  call ed_set_Hreplica(Hvec,lambdavec)
+end subroutine init_Hreplica_symmetries_site_C
 
-!subroutine init_Hreplica_symmetries_lattice(Hvec,lambdavec)
-!  USE EDIPACK, only: ed_set_Hreplica,Norb,Nspin
-!  USE SCIFOR, only: assert_shape
-!  implicit none
-!  real(8),dimension(:,:,:,:,:),intent(inout) :: Hvec
-!  real(8),dimension(:,:),intent(inout)       :: lambdavec
-!  integer                                    :: Nsym
-!  Nsym = size(lambdavec,2)
-!  call assert_shape(Hvec,[Nspin,Nspin,Norb,Norb,Nsym],"init_Hreplica_symmetries_lattice","Hvec")  
-!  call ed_set_Hreplica(Hvec,lambdavec)
-!end subroutine init_Hreplica_symmetries_lattice
+subroutine init_Hreplica_symmetries_lattice_c(Hvec,lambdavec,Nlat,Nsym) bind(c, name='init_Hreplica_symmetries_lattice')
+  integer(c_int),value                                     :: Nlat, Nsym
+  real(c_double),dimension(Nspin,Nspin,Norb,Norb,Nsym)     :: Hvec
+  real(c_double),dimension(Nlat,Nsym)                      :: lambdavec
+  call ed_set_Hreplica(Hvec,lambdavec)
+end subroutine init_Hreplica_symmetries_lattice_c
 
 
 

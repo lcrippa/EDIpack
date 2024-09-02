@@ -117,6 +117,55 @@ get_bath_dimension_wrap.restype = c_int
 
 def get_bath_dimension(self):
     return get_bath_dimension_wrap()
+
+
+init_hreplica_direct_nn = libedi2py.init_Hreplica_direct_nn
+init_hreplica_direct_nn.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=4, flags='F_CONTIGUOUS')]
+init_hreplica_direct_nn.restype = None
+
+init_hreplica_direct_so = libedi2py.init_Hreplica_direct_so
+init_hreplica_direct_so.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=2, flags='F_CONTIGUOUS')]
+init_hreplica_direct_so.restype = None
+
+init_hreplica_symmetries_site = libedi2py.init_Hreplica_symmetries_site
+init_hreplica_symmetries_site.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=5, flags='F_CONTIGUOUS'),np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int]
+init_hreplica_symmetries_site.restype = None
+
+init_hreplica_symmetries_lattice = libedi2py.init_Hreplica_symmetries_lattice
+init_hreplica_symmetries_lattice.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=5, flags='F_CONTIGUOUS'),np.ctypeslib.ndpointer(dtype=float,ndim=2, flags='F_CONTIGUOUS'),c_int,c_int]
+init_hreplica_symmetries_lattice.restype = None
+    
+def set_Hreplica(self,hloc=None,hvec=None,lambdavec=None):
+    
+    aux_norb=c_int.in_dll(libedi2py, "Norb").value
+    aux_nspin=c_int.in_dll(libedi2py, "Nspin").value
+
+    if hloc is not None:
+        shape_hloc=np.shape(hloc)
+        if(len(shape_hloc)==4):                       #hloc[Nspin,Nspin,Norb,Norb]
+            if shape_hloc == (aux_nspin,aux_nspin,aux_norb,aux_norb):
+                init_hreplica_direct_nn(hloc)
+            else:
+                raise ValueError("Shape of 4-dimensional Hloc != [Nspin,Nspin,Norb,Norb] in set_Hreplica")
+        elif(len(shape_hloc)==2):                           #hloc[Nso,Nso]
+            if shape_hloc == (aux_nspin*aux_norb,aux_nspin*aux_norb):
+                init_hreplica_direct_so(hloc)
+            else:
+                raise ValueError('Shape of 2-dimensional Hloc != [Nso,Nso] in set_Hreplica')
+    elif (hvec is not None) and (lambdavec is not None):
+        Dimhvec = np.shape(hvec)
+        if(len(Dimhvec) is not 5):
+            raise ValueError("Dim(hvec) != [Nspin,Nspin,Norb,Norb,Nsym] in set_Hreplica")
+        DimLam=np.shape(lambdavec)
+        if(len(DimLam)==1):
+            init_hreplica_symmetries_site(hvec,lambdavec,DimLam[0])
+        elif(len(DimLam)==2):
+            init_hreplica_symmetries_lattice(hvec,lambdavec,DimLam[0],DimLam[1])
+        else:
+             raise ValueError('Shape(lambdavec) != 1 or 2 [Nsym] or [Nineq,Nsym] in set_Hreplica')
+    else:
+        raise ValueError("set_Hreplica requires either hloc or (hvec,lambdavec) as arguments")
+    return ;
     
 ######################################
 # ED_IO FUNCTIONS
@@ -403,6 +452,7 @@ global_env.init_solver = types.MethodType(init_solver, global_env)
 global_env.solve = types.MethodType(solve, global_env)
 
 global_env.get_bath_dimension = types.MethodType(get_bath_dimension, global_env)
+global_env.set_Hreplica = types.MethodType(set_Hreplica, global_env)
 
 global_env.get_sigma_matsubara = types.MethodType(get_sigma_matsubara, global_env)
 global_env.get_sigma_realaxis = types.MethodType(get_sigma_realaxis, global_env)
