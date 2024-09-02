@@ -111,6 +111,7 @@ def solve(self,bath,hloc,sflag=True,mpi_lanc=False):
 # ED_BATH FUNCTIONS
 ######################################
 
+#get_bath_dimension
 get_bath_dimension_wrap = libedi2py.get_bath_dimension
 get_bath_dimension_wrap.argtypes = None  # allows for automatic type conversion
 get_bath_dimension_wrap.restype = c_int
@@ -118,7 +119,7 @@ get_bath_dimension_wrap.restype = c_int
 def get_bath_dimension(self):
     return get_bath_dimension_wrap()
 
-
+#init_hreplica
 init_hreplica_direct_nn = libedi2py.init_Hreplica_direct_nn
 init_hreplica_direct_nn.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=4, flags='F_CONTIGUOUS')]
 init_hreplica_direct_nn.restype = None
@@ -131,7 +132,7 @@ init_hreplica_symmetries_site = libedi2py.init_Hreplica_symmetries_site
 init_hreplica_symmetries_site.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=5, flags='F_CONTIGUOUS'),np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int]
 init_hreplica_symmetries_site.restype = None
 
-init_hreplica_symmetries_lattice = libedi2py.init_Hreplica_symmetries_lattice
+init_hreplica_symmetries_lattice = libedi2py.init_Hreplica_symmetries_ineq
 init_hreplica_symmetries_lattice.argtypes =[np.ctypeslib.ndpointer(dtype=float,ndim=5, flags='F_CONTIGUOUS'),np.ctypeslib.ndpointer(dtype=float,ndim=2, flags='F_CONTIGUOUS'),c_int,c_int]
 init_hreplica_symmetries_lattice.restype = None
     
@@ -167,6 +168,195 @@ def set_Hreplica(self,hloc=None,hvec=None,lambdavec=None):
         raise ValueError("set_Hreplica requires either hloc or (hvec,lambdavec) as arguments")
     return ;
     
+#break_symmetry_bath
+break_symmetry_bath_site = libedi2py.break_symmetry_bath_site
+break_symmetry_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_double,c_double,c_int]
+break_symmetry_bath_site.restype = None
+
+break_symmetry_bath_ineq = libedi2py.break_symmetry_bath_ineq
+break_symmetry_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=2, flags='F_CONTIGUOUS'),c_int,c_int,c_double,c_double,c_int]
+break_symmetry_bath_ineq.restype = None
+
+def break_symmetry_bath(self, bath, field, sign, save=True):
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (len(bath_shape)) == 1:
+        break_symmetry_bath_site(bath,bath_shape[0],field,float(sign),save_int)
+    else:
+        break_symmetry_bath_ineq(bath,bath_shape[0],bath_shape[1],field,float(sign),save_int)
+    return bath
+    
+#spin_symmetrize_bath
+spin_symmetrize_bath_site = libedi2py.spin_symmetrize_bath_site
+spin_symmetrize_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int]
+spin_symmetrize_bath_site.restypes = None
+
+spin_symmetrize_bath_ineq = libedi2py.spin_symmetrize_bath_ineq
+spin_symmetrize_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int]
+spin_symmetrize_bath_ineq.restypes = None
+    
+def spin_symmetrize_bath(self, bath, save=True):
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (len(bath_shape)) == 1:
+        spin_symmetrize_bath_site(bath,bath_shape[0],save_int)
+    else:
+        spin_symmetrize_bath_ineq(bath,bath_shape[0],bath_shape[1],save_int)
+    return bath
+    
+#orb_symmetrize_bath
+orb_symmetrize_bath_site = libedi2py.orb_symmetrize_bath_site
+orb_symmetrize_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int]
+orb_symmetrize_bath_site.restypes = None
+
+orb_symmetrize_bath_ineq = libedi2py.orb_symmetrize_bath_ineq
+orb_symmetrize_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int]
+orb_symmetrize_bath_ineq.restypes = None
+    
+def orb_symmetrize_bath(self, bath, save):
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (len(bath_shape)) == 1:
+        orb_symmetrize_bath_site(bath,bath_shape[0],save_int)
+    else:
+        orb_symmetrize_bath_ineq(bath,bath_shape[0],bath_shape[1],save_int)
+    return bath
+    
+#orb_equality_bath
+orb_equality_bath_site = libedi2py.orb_equality_bath_site
+orb_equality_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int]
+orb_equality_bath_site.restypes = None
+
+orb_equality_bath_ineq = libedi2py.orb_equality_bath_ineq
+orb_equality_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int,c_int]
+orb_equality_bath_ineq.restypes = None
+    
+def orb_equality_bath(self, bath, indx, save=True):
+    aux_norb=c_int.in_dll(libedi2py, "Norb").value
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (indx < 0) or (indx >= aux_norb):
+        raise ValueError("orb_equality_bath: orbital index should be in [0,Norb]")
+    else:
+        indx = indx + 1 #python to fortran convention 
+        if (len(bath_shape)) == 1:
+            orb_equality_bath_site(bath,bath_shape[0],indx,save_int)
+        else:
+            orb_equality_bath_ineq(bath,bath_shape[0],bath_shape[1],indx,save_int)
+    return bath
+    
+    
+#ph_symmetrize_bath
+ph_symmetrize_bath_site = libedi2py.ph_symmetrize_bath_site
+ph_symmetrize_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int]
+ph_symmetrize_bath_site.restypes = None
+
+ph_symmetrize_bath_ineq = libedi2py.ph_symmetrize_bath_ineq
+ph_symmetrize_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int]
+ph_symmetrize_bath_ineq.restypes = None
+
+def ph_symmetrize_bath(self, bath, save):
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (len(bath_shape)) == 1:
+        ph_symmetrize_bath_site(bath,bath_shape[0],save_int)
+    else:
+        ph_symmetrize_bath_ineq(bath,bath_shape[0],bath_shape[1],save_int)
+    return bath
+
+#ph_trans_bath
+ph_trans_bath_site = libedi2py.ph_trans_bath_site
+ph_trans_bath_site.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int]
+ph_trans_bath_site.restypes = None
+
+ph_trans_bath_ineq = libedi2py.ph_trans_bath_ineq
+ph_trans_bath_ineq.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int]
+ph_trans_bath_ineq.restypes = None
+
+def ph_trans_bath(self, bath, save):
+    if save:
+        save_int=1
+    else:
+        save_int=0
+    bath_shape = np.shape(bath)
+    if (len(bath_shape)) == 1:
+        ph_trans_bath_site(bath,bath_shape[0],save_int)
+    else:
+        ph_trans_bath_ineq(bath,bath_shape[0],bath_shape[1],save_int)
+    return bath
+    
+#get_bath_component_dimension
+get_bath_component_dimension_wrap = libedi2py.get_bath_component_dimension
+get_bath_component_dimension_wrap.argtypes = [c_char_p,np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS')]
+get_bath_component_dimension_wrap.restypes = None
+
+def get_bath_component_dimension(self,typ="e"):
+    ndim=np.zeros(3,order="F")
+    get_bath_component_dimension_wrap(c_char_p(typ.encode()),ndim)
+    ndim = [int(a) for a in ndim]
+    return ndim
+
+#get_bath_component
+get_bath_component_wrap = libedi2py.get_bath_component
+get_bath_component_wrap.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int,np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_char_p]
+get_bath_component_wrap.restypes = None
+
+def get_bath_component(self,array,bath,typ="e"):
+    DimArray=np.shape(array)
+    DimBath=np.shape(bath)
+    if not len(DimArray)==3:
+        raise ValueError('Shape(array) != 3 in get_bath_component')
+    if not len(DimBath)==1:
+        raise ValueError('Shape(bath) != 1 in get_bath_component')
+    edi2py.get_bath_component(array,DimArray[0],DimArray[1],DimArray[2],bath,DimBath[0],c_char_p(typ.encode()))
+    return array
+
+#set_bath_component
+set_bath_component_wrap = libedi2py.set_bath_component
+set_bath_component_wrap.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_int,c_int,np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_char_p]
+set_bath_component_wrap.restypes = None
+
+def set_bath_component(self,array,bath,typ="e"):
+    DimArray=np.shape(array)
+    DimBath=np.shape(bath)
+    if not len(DimArray)==3:
+        raise ValueError('Shape(array) != 3 in get_bath_component')
+    if not len(DimBath)==1:
+        raise ValueError('Shape(bath) != 1 in get_bath_component')
+    edi2py.set_bath_component(array,DimArray[0],DimArray[1],DimArray[2],bath,DimBath[0],c_char_p(typ.encode()))
+    return bath
+ 
+#copy_bath_component
+copy_bath_component_wrap = libedi2py.copy_bath_component
+copy_bath_component_wrap.argtypes = [np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,np.ctypeslib.ndpointer(dtype=float,ndim=1, flags='F_CONTIGUOUS'),c_int,c_char_p]
+copy_bath_component_wrap.restypes = None
+
+def copy_bath_component(bathIN,bathOUT,typ="e"):
+    DimBathIn=p.shape(bathIN)
+    DimBathOut=np.shape(bathOUT)
+    if not DimBathIn==1:
+        raise ValueError('Shape(bathIN) != 1 in copy_bath_component')
+    if not DimBathOut==1:
+        raise ValueError('Shape(bathOUT) != 1 in copy_bath_component')
+    edi2py.copy_bath_component(bathIN,bathOUT,c_char_p(typ.encode()))
+    return bathOUT
+
+
 ######################################
 # ED_IO FUNCTIONS
 ######################################
@@ -434,18 +624,31 @@ add_global_variable(global_env, "Norb", c_int.in_dll(libedi2py, "Norb"), "value"
 add_global_variable(global_env, "Nspin", c_int.in_dll(libedi2py, "Nspin"), "value")
 add_global_variable(global_env, "Nloop", c_int.in_dll(libedi2py, "Nloop"), "value")
 add_global_variable(global_env, "Nph", c_int.in_dll(libedi2py, "Nph"), "value")
-add_global_variable(global_env, "Uloc", ARRAY(c_double, 5).in_dll(libedi2py, "Uloc"), "value")
-add_global_variable(global_env, "Ust", c_double.in_dll(libedi2py, "Ust"), "value")
-add_global_variable(global_env, "beta", c_double.in_dll(libedi2py, "beta"), "value")
+add_global_variable(global_env, "Nsuccess", c_int.in_dll(libedi2py, "Nsuccess"), "value")
 add_global_variable(global_env, "Lmats", c_int.in_dll(libedi2py, "Lmats"), "value")
 add_global_variable(global_env, "Lreal", c_int.in_dll(libedi2py, "Lreal"), "value")
+add_global_variable(global_env, "Ltau", c_int.in_dll(libedi2py, "Ltau"), "value")
+add_global_variable(global_env, "Lpos", c_int.in_dll(libedi2py, "Lpos"), "value")
+add_global_variable(global_env, "LOGfile", c_int.in_dll(libedi2py, "LOGfile"), "value")
+
+add_global_variable(global_env, "Uloc", ARRAY(c_double, 5).in_dll(libedi2py, "Uloc"), "value")
+add_global_variable(global_env, "Ust", c_double.in_dll(libedi2py, "Ust"), "value")
+add_global_variable(global_env, "Jh", c_double.in_dll(libedi2py, "Jh"), "value")
+add_global_variable(global_env, "Jx", c_double.in_dll(libedi2py, "Jx"), "value")
+add_global_variable(global_env, "Jp", c_double.in_dll(libedi2py, "Jp"), "value")
+add_global_variable(global_env, "xmu", c_double.in_dll(libedi2py, "xmu"), "value")
+add_global_variable(global_env, "beta", c_double.in_dll(libedi2py, "beta"), "value")
+add_global_variable(global_env, "dmft_error", c_double.in_dll(libedi2py, "dmft_error"), "value")
+add_global_variable(global_env, "eps", c_double.in_dll(libedi2py, "eps"), "value")
 add_global_variable(global_env, "wini", c_double.in_dll(libedi2py, "wini"), "value")
 add_global_variable(global_env, "wfin", c_double.in_dll(libedi2py, "wfin"), "value")
-add_global_variable(global_env, "eps", c_double.in_dll(libedi2py, "eps"), "value")
-add_global_variable(global_env, "dmft_error", c_double.in_dll(libedi2py, "dmft_error"), "value")
+add_global_variable(global_env, "xmin", c_double.in_dll(libedi2py, "xmin"), "value")
+add_global_variable(global_env, "xmax", c_double.in_dll(libedi2py, "xmax"), "value")
+add_global_variable(global_env, "sb_field", c_double.in_dll(libedi2py, "sb_field"), "value")
+add_global_variable(global_env, "nread", c_double.in_dll(libedi2py, "nread"), "value")
+
 
 #functions
-
 global_env.read_input = types.MethodType(read_input, global_env)
 
 global_env.init_solver = types.MethodType(init_solver, global_env)
@@ -453,6 +656,16 @@ global_env.solve = types.MethodType(solve, global_env)
 
 global_env.get_bath_dimension = types.MethodType(get_bath_dimension, global_env)
 global_env.set_Hreplica = types.MethodType(set_Hreplica, global_env)
+global_env.break_symmetry_bath = types.MethodType(break_symmetry_bath, global_env)
+global_env.spin_symmetrize_bath = types.MethodType(spin_symmetrize_bath, global_env)
+global_env.orb_symmetrize_bath = types.MethodType(orb_symmetrize_bath, global_env)
+global_env.orb_equality_bath = types.MethodType(orb_equality_bath, global_env)
+global_env.ph_symmetrize_bath = types.MethodType(ph_symmetrize_bath, global_env)
+global_env.ph_trans_bath = types.MethodType(ph_trans_bath, global_env)
+global_env.get_bath_component_dimension = types.MethodType(get_bath_component_dimension, global_env)
+global_env.get_bath_component = types.MethodType(get_bath_component, global_env)
+global_env.set_bath_component = types.MethodType(set_bath_component, global_env)
+global_env.copy_bath_component = types.MethodType(copy_bath_component, global_env)
 
 global_env.get_sigma_matsubara = types.MethodType(get_sigma_matsubara, global_env)
 global_env.get_sigma_realaxis = types.MethodType(get_sigma_realaxis, global_env)

@@ -21,172 +21,148 @@ subroutine init_Hreplica_symmetries_site_c(Hvec,lambdavec,Nsym) bind(c, name='in
   call ed_set_Hreplica(Hvec,lambdavec)
 end subroutine init_Hreplica_symmetries_site_C
 
-subroutine init_Hreplica_symmetries_lattice_c(Hvec,lambdavec,Nlat,Nsym) bind(c, name='init_Hreplica_symmetries_lattice')
+subroutine init_Hreplica_symmetries_ineq_c(Hvec,lambdavec,Nlat,Nsym) bind(c, name='init_Hreplica_symmetries_ineq')
   integer(c_int),value                                     :: Nlat, Nsym
   real(c_double),dimension(Nspin,Nspin,Norb,Norb,Nsym)     :: Hvec
   real(c_double),dimension(Nlat,Nsym)                      :: lambdavec
   call ed_set_Hreplica(Hvec,lambdavec)
-end subroutine init_Hreplica_symmetries_lattice_c
+end subroutine init_Hreplica_symmetries_ineq_c
 
 
 
 
 !BREAK_SYMMETRY_BATH
-!subroutine break_symmetry_bath_site(bath,field,sign,save)
-!  USE EDIPACK, only: ed_break_symmetry_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  real(8),intent(in)                 :: field
-!  real(8),intent(in)                 :: sign
-!  logical,intent(in)                 :: save
-!  call ed_break_symmetry_bath(bath,field,sign,save)
-!end subroutine break_symmetry_bath_site
+subroutine break_symmetry_bath_site_c(bath,dim_bath_1,field,sgn,sav) bind(c, name='break_symmetry_bath_site')
+  real(c_double),dimension(dim_bath_1) :: bath
+  real(c_double),value                 :: field
+  real(c_double),value                 :: sgn
+  integer(c_int),value                 :: sav,dim_bath_1
+  call ed_break_symmetry_bath(bath,field,sgn,i2l(sav))
+end subroutine break_symmetry_bath_site_c
 !
-!subroutine break_symmetry_bath_ineq(bath,field,sign,save)
-!  USE EDIPACK, only: ed_break_symmetry_bath
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: bath
-!  real(8),intent(in)                   :: field
-!  real(8),intent(in)                   :: sign
-!  logical,intent(in)                   :: save
-!  call ed_break_symmetry_bath(bath,field,sign,save)
-!end subroutine break_symmetry_bath_ineq
+subroutine break_symmetry_bath_ineq_c(bath,dim_bath_1,dim_bath_2,field,sgn,sav) bind(c, name='break_symmetry_bath_ineq')
+  real(c_double),dimension(dim_bath_1,dim_bath_2) :: bath
+  real(c_double),value                            :: field
+  real(c_double),value                            :: sgn
+  integer(c_int),value                            :: sav, dim_bath_1, dim_bath_2
+  call ed_break_symmetry_bath(bath,field,sgn,i2l(sav))
+end subroutine break_symmetry_bath_ineq_c
 
 
 
 !SPIN_SYMMETRIZE_BATH
-!subroutine spin_symmetrize_bath_site(bath,save)
-!  USE EDIPACK, only: ed_spin_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  logical,intent(in)                 :: save
-!  call ed_spin_symmetrize_bath(bath,save)
-!end subroutine spin_symmetrize_bath_site
+subroutine spin_symmetrize_bath_site_c(bath,dim_bath_1,sav) bind(c, name='spin_symmetrize_bath_site')
+  integer(c_int),value                 :: sav,dim_bath_1
+  real(c_double),dimension(dim_bath_1) :: bath
+  call ed_spin_symmetrize_bath(bath,i2l(sav))
+end subroutine spin_symmetrize_bath_site_c
 !
-!subroutine spin_symmetrize_bath_ineq(bath,save)
-!  USE EDIPACK, only: ed_spin_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: bath
-!  logical,intent(in)          :: save
-!  call ed_spin_symmetrize_bath(bath,save)
-!end subroutine spin_symmetrize_bath_ineq
+subroutine spin_symmetrize_bath_ineq_c(bath,dim_bath_1,dim_bath_2,sav) bind(c, name='spin_symmetrize_bath_ineq')
+  integer(c_int),value                            :: sav,dim_bath_1,dim_bath_2
+  real(c_double),dimension(dim_bath_1,dim_bath_2) :: bath
+  call ed_spin_symmetrize_bath(bath,i2l(sav))
+end subroutine spin_symmetrize_bath_ineq_c
 
 
 
 !ORB_SYMMETRIZE_BATH
-!subroutine orb_symmetrize_bath_site(bath,save)
-!  USE EDIPACK, only: ed_orb_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  logical,intent(in)        :: save
-!  call ed_orb_symmetrize_bath(bath,save)
-!end subroutine orb_symmetrize_bath_site
+subroutine orb_symmetrize_bath_site_c(bath,dim_bath_1,sav) bind(c, name='orb_symmetrize_bath_site')
+  integer(c_int),value                 :: sav,dim_bath_1
+  real(c_double),dimension(dim_bath_1) :: bath
+  call ed_orb_symmetrize_bath(bath,i2l(sav))
+end subroutine orb_symmetrize_bath_site_c
 !
-!subroutine orb_symmetrize_bath_ineq(bath,save)
-!  USE EDIPACK, only: ed_orb_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: bath
-!  logical,intent(in)          :: save
-!  call ed_orb_symmetrize_bath(bath,save)
-!end subroutine orb_symmetrize_bath_ineq
-
+subroutine orb_symmetrize_bath_ineq_c(bath,dim_bath_1,dim_bath_2,sav) bind(c, name='orb_symmetrize_bath_ineq')
+  integer(c_int),value                            :: sav,dim_bath_1,dim_bath_2
+  real(c_double),dimension(dim_bath_1,dim_bath_2) :: bath
+  call ed_orb_symmetrize_bath(bath,i2l(sav))
+end subroutine orb_symmetrize_bath_ineq_c
 
 
 !ORB_EQUALITY_BATH
-!subroutine orb_equality_bath_site(bath,indx,save)
-!  USE EDIPACK, only: ed_orb_equality_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  integer,intent(in)                 :: indx
-!  logical,intent(in)                 :: save
-!  call ed_orb_equality_bath(bath,indx,save)
-!end subroutine orb_equality_bath_site
+subroutine orb_equality_bath_site_c(bath,dim_bath_1,indx,sav) bind(c, name='orb_equality_bath_site')
+  real(c_double),dimension(dim_bath_1)    :: bath
+  integer(c_int),value                    :: indx,dim_bath_1,sav
+  call ed_orb_equality_bath(bath,indx,i2l(sav))
+end subroutine orb_equality_bath_site_c
 !
-!subroutine orb_equality_bath_ineq(bath,indx,save)
-!  USE EDIPACK, only: ed_orb_equality_bath
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: bath
-!  integer,intent(in)                   :: indx
-!  logical,intent(in)                   :: save
-!  call ed_orb_equality_bath(bath,indx,save)
-!end subroutine orb_equality_bath_ineq
+subroutine orb_equality_bath_ineq_c(bath,dim_bath_1,dim_bath_2,indx,sav) bind(c, name='orb_equality_bath_ineq')
+  real(c_double),dimension(dim_bath_1,dim_bath_2)    :: bath
+  integer(c_int),value                               :: indx,dim_bath_1,dim_bath_2,sav
+  call ed_orb_equality_bath(bath,indx,i2l(sav))
+end subroutine orb_equality_bath_ineq_c
 
 
 
 
 
 !PH_SYMMETRIZE_BATH
-!subroutine ph_symmetrize_bath_site(bath,save)
-!  USE EDIPACK, only: ed_ph_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  logical,intent(in)        :: save
-!  call ed_ph_symmetrize_bath(bath,save)
-!end subroutine ph_symmetrize_bath_site
+subroutine ph_symmetrize_bath_site_c(bath,dim_bath_1,sav) bind(c, name='ph_symmetrize_bath_site')
+  real(c_double),dimension(dim_bath_1) :: bath
+  integer(c_int),value                 :: sav,dim_bath_1
+  call ed_ph_symmetrize_bath(bath,i2l(sav))
+end subroutine ph_symmetrize_bath_site_c
 !
-!subroutine ph_symmetrize_bath_ineq(bath,save)
-!  USE EDIPACK, only: ed_ph_symmetrize_bath
-!  implicit none
-!  real(8),dimension(:,:),intent(inout) :: bath
-!  logical,intent(in)                   :: save
-!  call ed_ph_symmetrize_bath(bath,save)
-!end subroutine ph_symmetrize_bath_ineq
+subroutine ph_symmetrize_bath_ineq_c(bath,dim_bath_1,dim_bath_2,sav) bind(c, name='ph_symmetrize_bath_ineq')
+  real(c_double),dimension(dim_bath_1,dim_bath_2) :: bath
+  integer(c_int),value                            :: sav,dim_bath_1,dim_bath_2
+  call ed_ph_symmetrize_bath(bath,i2l(sav))
+end subroutine ph_symmetrize_bath_ineq_c
 
 
 
 !PH_TRANS_BATH
-!subroutine ph_trans_bath_site(bath,save)
-!  USE EDIPACK, only: ed_ph_trans_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  logical,intent(in)        :: save
-!  call ed_ph_trans_bath(bath,save)
-!end subroutine ph_trans_bath_site
+subroutine ph_trans_bath_site_c(bath,dim_bath_1,sav) bind(c, name='ph_trans_bath_site')
+  real(c_double),dimension(dim_bath_1) :: bath
+  integer(c_int),value                 :: sav,dim_bath_1
+  call ed_ph_trans_bath(bath,i2l(sav))
+end subroutine ph_trans_bath_site_c
 !
-!subroutine ph_trans_bath_ineq(bath,save)
-!  USE EDIPACK, only: ed_ph_trans_bath
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bath
-!  logical,intent(in)        :: save
-!  call ed_ph_trans_bath(bath,save)
-!end subroutine ph_trans_bath_ineq
-
-
-
+subroutine ph_trans_bath_ineq_c(bath,dim_bath_1,dim_bath_2,sav) bind(c, name='ph_trans_bath_ineq')
+  real(c_double),dimension(dim_bath_1,dim_bath_2) :: bath
+  integer(c_int),value                            :: sav,dim_bath_1,dim_bath_2
+  call ed_ph_trans_bath(bath,i2l(sav))
+end subroutine ph_trans_bath_ineq_c
 
 
 
 !BATH COMPONENT ROUTINES
-!subroutine get_bath_component_dimension(type,ndim)
-!  USE EDIPACK, only: ed_get_bath_component_dimension
-!  implicit none
-!  character(len=1),intent(in) :: type
-!  integer,intent(out)         :: Ndim(3)
-!  Ndim = ed_get_bath_component_dimension(type)
-!end subroutine get_bath_component_dimension
+subroutine get_bath_component_dimension_c(instr,Nout) bind(c, name='get_bath_component_dimension')
+  character(kind=c_char), dimension(1)   :: instr
+  character(len=1)                       :: typ
+  integer,dimension(3)                   :: Ndim
+  real(c_double),dimension(3)            :: Nout
+  typ(1:1)=instr(1)
+  Ndim = ed_get_bath_component_dimension(typ)
+  Nout=float(Ndim)
+end subroutine get_bath_component_dimension_c
 
-!subroutine get_bath_component(array,bath_,type)
-!  USE EDIPACK, only: ed_get_bath_component
-!  implicit none
-!  real(8),dimension(:,:,:),intent(inout) :: array
-!  real(8),dimension(:),intent(in)        :: bath_
-!  character(len=1),intent(in)            :: type
-!  call ed_get_bath_component(array,bath_,type)
-!end subroutine get_bath_component
+subroutine get_bath_component(array,dim_array_1,dim_array_2,dim_array_3,bath,dim_bath_1,instr) bind(c, name='get_bath_component')
+  real(c_double),dimension(dim_array_1,dim_array_2,dim_array_3) :: array
+  real(c_double),dimension(dim_bath_1)                          :: bath
+  character(kind=c_char), dimension(1)                          :: instr
+  character(len=1)                                              :: typ
+  integer(c_int),value                                          :: dim_bath_1,dim_array_1,dim_array_2,dim_array_3
+  typ(1:1)=instr(1)
+  call ed_get_bath_component(array,bath,typ)
+end subroutine get_bath_component
 
-!subroutine set_bath_component(array,bath_,type)
-!  USE EDIPACK, only: ed_set_bath_component
-!  implicit none
-!  real(8),dimension(:,:,:),intent(out)   :: array
-!  real(8),dimension(:),intent(in)        :: bath_
-!  character(len=1),intent(in)            :: type
-!  call ed_set_bath_component(array,bath_,type)
-!end subroutine set_bath_component
+subroutine set_bath_component(array,dim_array_1,dim_array_2,dim_array_3,bath,dim_bath_1,instr) bind(c, name='set_bath_component')
+  real(c_double),dimension(dim_array_1,dim_array_2,dim_array_3) :: array
+  real(c_double),dimension(dim_bath_1)                          :: bath
+  character(kind=c_char), dimension(1)                          :: instr
+  character(len=1)                                              :: typ
+  integer(c_int),value                                          :: dim_bath_1,dim_array_1,dim_array_2,dim_array_3
+  typ(1:1)=instr(1)
+  call ed_set_bath_component(array,bath,typ)
+end subroutine set_bath_component
 
-!subroutine copy_bath_component(bathIN,bathOUT,type)
-!  USE EDIPACK, only: ed_copy_bath_component
-!  implicit none
-!  real(8),dimension(:),intent(inout) :: bathIN
-!  character(len=1),intent(in)        :: type
-!  real(8),dimension(:),intent(out)   :: bathOUT
-!end subroutine copy_bath_component
+subroutine copy_bath_component(bathIN,dim_bathin,bathOUT,dim_bathout,instr) bind(c, name='copy_bath_component')
+  real(c_double),dimension(dim_bathin)      :: bathIN
+  real(c_double),dimension(dim_bathout)     :: bathOUT
+  character(kind=c_char), dimension(1)      :: instr
+  character(len=1)                          :: typ
+  integer(c_int),value                      :: dim_bathin, dim_bathout
+  typ(1:1)=instr(1)
+  call ed_copy_bath_component(bathIN,bathOUT,typ)
+end subroutine copy_bath_component
