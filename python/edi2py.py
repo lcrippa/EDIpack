@@ -43,16 +43,19 @@ def add_global_variable(obj, dynamic_name, target_object, target_attribute):
     setattr(obj.__class__, dynamic_name, getter)
     setattr(obj.__class__, dynamic_name, setter)
 
-#create the class containing all the global variables
-
 
 ######################################
 # Load shared library with C-bindings
 ######################################
 
+system = sys.platform
+libext = '.so' 
+if(system=='darwin'):
+    libext = '.dylib'
 libpath = os.path.dirname(os.path.realpath(__file__))
-libfile = os.path.join(libpath, 'libedi2py.so')
+libfile = os.path.join(libpath, 'libedi2py'+libext)
 libedi2py = CDLL(libfile)
+
 
 ######################################
 # READ_INPUT
